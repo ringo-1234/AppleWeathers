@@ -1,6 +1,7 @@
 package jp.apple.aw.weather;
 
 import jp.apple.aw.AppleWeathersCore;
+import jp.apple.aw.weather.render.RenderRainy;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -18,10 +19,13 @@ public class WeatherRenderer {
             case CLOUDY:
                 break;
             case LIGHT_RAINY:
+                RenderRainy.render(event, 1);
                 break;
             case RAINY:
+                RenderRainy.render(event, 2);
                 break;
             case HEAVY_RAINY:
+                RenderRainy.render(event, 3);
                 break;
             case LIGHT_SNOWY:
                 break;
