@@ -14,7 +14,7 @@ public class VanillaWeatherCommand {
             event.setCanceled(true);
             
             event.getSender().sendMessage(new TextComponentString(
-                    "§c[AppleWeathers] このワールドでそのコマンドは使えません。"
+                    "§c[AppleWeathers] このワールドでそのコマンドは使えません。=> ./aw help"
             ));
         }
     }
