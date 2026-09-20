@@ -1,5 +1,6 @@
 package jp.apple.aw;
 
+import jp.apple.aw.command.CommandAppleWeathers;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
@@ -18,4 +19,8 @@ public class AppleWeathersCore {
         LOGGER.info("Loaded: {}",Tags.MOD_NAME);
     }
     
+    @Mod.EventHandler
+    public void serverStarting(net.minecraftforge.fml.common.event.FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandAppleWeathers());
+    }
 }
