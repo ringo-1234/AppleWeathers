@@ -28,7 +28,7 @@ public class RenderRainy {
     public static float speedMin = 0.6f;
     public static float speedMax = 1.4f;
     /** 雨粒1本の長さ・幅 (blocks) */
-    public static float dropLength = 0.8f;
+    public static float dropLength = 0.4f;
     public static float dropWidth = 0.03f;
     /** 色（乗算）とアルファ */
     public static float red = 1.0f;
