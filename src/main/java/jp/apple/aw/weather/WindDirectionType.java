@@ -1,6 +1,6 @@
 package jp.apple.aw.weather;
 
-public enum WindType {
+public enum WindDirectionType {
     /* 北 */
     N("北", 0.0),
     /* 北東 */
@@ -21,7 +21,7 @@ public enum WindType {
     private final String label;
     private final double degree;
 
-    WindType(String label, double degree) {
+    WindDirectionType(String label, double degree) {
         this.label = label;
         this.degree = degree;
     }
@@ -34,7 +34,7 @@ public enum WindType {
         return degree;
     }
     
-    public static WindType fromDegree(double degree) {
+    public static WindDirectionType fromDegree(double degree) {
         double normalized = (degree % 360 + 360) % 360;
 
         if (normalized >= 337.5 || normalized < 22.5) return N;
