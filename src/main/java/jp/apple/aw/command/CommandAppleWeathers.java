@@ -26,7 +26,7 @@ public class CommandAppleWeathers extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args[0].equalsIgnoreCase("help")) {
+        if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
             sender.sendMessage(new TextComponentString(getUsage(sender)));
             return;
         }
@@ -44,7 +44,12 @@ public class CommandAppleWeathers extends CommandBase {
                     sender.sendMessage(new TextComponentString("§cこの天候はmeta値が必要です。例: ./aw weather rainy 1"));
                     return;
                 }
-                meta = Integer.parseInt(args[2]);
+                try {
+                    meta = Integer.parseInt(args[2]);
+                } catch (IllegalArgumentException e) {
+                    sender.sendMessage(new TextComponentString("§cmeta値は整数の 0〜2 の範囲で指定してください。"));
+                    return;
+                }
                 if (meta < 0 || meta > 2) {
                     sender.sendMessage(new TextComponentString("§cmeta値は 0〜2 の範囲で指定してください。"));
                     return;
