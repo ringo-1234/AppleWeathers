@@ -22,13 +22,13 @@ public class WeatherRenderer {
             case CLOUDY:
                 break;
             case LIGHT_RAINY:
-                RenderRainy.render(event, 1);
+                RenderRainy.render(event, 4);
                 break;
             case RAINY:
-                RenderRainy.render(event, 2);
+                RenderRainy.render(event, 8);
                 break;
             case HEAVY_RAINY:
-                RenderRainy.render(event, 3);
+                RenderRainy.render(event, 15);
                 break;
             case LIGHT_SNOWY:
                 break;
