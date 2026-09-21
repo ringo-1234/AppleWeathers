@@ -34,7 +34,7 @@ public class RenderRainy {
     public static float red = 1.0f;
     public static float green = 1.0f;
     public static float blue = 1.0f;
-    public static float alpha = 0.5f;
+    public static float alpha = 0.3f;
 
     private static final long SEED = 12345L;
 
