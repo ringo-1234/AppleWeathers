@@ -2,6 +2,7 @@ package jp.apple.aw.weather;
 
 import jp.apple.aw.AppleWeathersCore;
 import jp.apple.aw.weather.render.RenderClouds;
+import jp.apple.aw.weather.render.RenderLightning;
 import jp.apple.aw.weather.render.RenderRainy;
 import jp.apple.aw.weather.render.RenderWetGround;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -15,11 +16,13 @@ public class WeatherRenderer {
     @SubscribeEvent
     public static void onRenderWorldLast(RenderWorldLastEvent event) {
         RenderClouds.render(event);
+        RenderLightning.render(event);
         RenderWetGround.render(event);
         switch (WeatherManager.currentWeather) {
             case SUNNY:
                 break;
             case STORMY:
+                RenderRainy.render(event, 20);
                 break;
             case CLOUDY:
                 break;
@@ -56,10 +59,14 @@ public class WeatherRenderer {
             case HEAVY_RAINY:
                 intensity = 3;
                 break;
+            case STORMY:
+                intensity = 3;
+                break;
             default:
                 break;
         }
         RenderClouds.onClientTick(WeatherManager.currentWeather);
+        RenderLightning.onClientTick(WeatherManager.currentWeather);
         RenderWetGround.onClientTick(intensity);
     }
 }
