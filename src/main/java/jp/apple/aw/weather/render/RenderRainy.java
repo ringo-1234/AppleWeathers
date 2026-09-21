@@ -21,9 +21,9 @@ public class RenderRainy {
     /** 雨粒数上限 */
     public static int maxDrops = 20000;
     /** 水平方向の描画範囲 */
-    public static double rangeXZ = 24.0;
+    public static double rangeXZ = 60.0;
     /** 垂直方向の描画範囲 */
-    public static double rangeY = 24.0;
+    public static double rangeY = 30.0;
     /** 落下速度の最小値・最大値 (blocks/tick) */
     public static float speedMin = 0.6f;
     public static float speedMax = 1.4f;
