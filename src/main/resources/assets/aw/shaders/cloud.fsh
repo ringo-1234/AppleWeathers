@@ -23,6 +23,9 @@ uniform float uShade;
 uniform vec3  uLit;              // 日向の色
 uniform vec3  uDark;             // 日陰の色
 
+uniform float uFlash;      // 雷のフラッシュ 0..1
+uniform vec3  uFlashDir;   // 稲妻の向き（ワールド）
+
 // ---- 環境 ----
 uniform vec3  uFogColor;
 uniform vec3  uSunDir;           // 夜は月の向き
@@ -119,6 +122,11 @@ void main() {
     // 太陽の近くの薄い縁は、透けて明るい
     float sunDot = max(dot(dirW, uSunDir), 0.0);
     col += uLit * pow(sunDot, 10.0) * (1.0 - dens) * 0.6 * uDay;
+    
+    // ---- 雷のフラッシュ：全体が明るくなり、稲妻の方向の雲は特に強く光る ----
+    float fd = max(dot(dirW, uFlashDir), 0.0);
+    float glow = clamp(uFlash * (0.30 + 0.70 * pow(fd, 4.0)), 0.0, 1.0);
+    col = mix(col, vec3(0.80, 0.87, 1.0), glow * 0.85);
 
     // ---- 水平線付近は霧の色へ溶かす ----
     col = mix(uFogColor, col, smoothstep(0.02, 0.30, abs(dy)));

@@ -223,6 +223,9 @@ public final class RenderClouds {
         }
         shader.set3f("uSunDir", sx, sy, 0f);
         shader.set1f("uDay", day);
+        shader.set1f("uFlash", RenderLightning.getSkyFlash(pt));
+        float[] fd = RenderLightning.getFlashDirection();
+        shader.set3f("uFlashDir", fd[0], fd[1], fd[2]);
     }
 
     /** 頂点シェーダーが行列を使わないので、-1..1 の四角形で画面全体になる */
