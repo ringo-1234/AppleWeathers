@@ -109,10 +109,25 @@ public class RenderRainy {
             double dz = wrap(nz[i] * rangeXZ - camZ, rangeXZ) - halfXZ;
             double dy = wrap(ny[i] * rangeY - time * speed - camY, rangeY) - halfY;
 
-            buf.pos(dx - rx, dy, dz - rz).tex(0, 0).color(red, green, blue, alpha).endVertex();
-            buf.pos(dx - rx, dy - dropLength, dz - rz).tex(0, 1).color(red, green, blue, alpha).endVertex();
-            buf.pos(dx + rx, dy - dropLength, dz + rz).tex(1, 1).color(red, green, blue, alpha).endVertex();
-            buf.pos(dx + rx, dy, dz + rz).tex(1, 0).color(red, green, blue, alpha).endVertex();
+            double top = dy;
+            double bottom = dy - dropLength;
+            float v1 = 1f;
+            
+            int surfaceY = RenderWetGround.getRainTopY(
+                    MathHelper.floor(camX + dx), MathHelper.floor(camZ + dz));
+            if (surfaceY >= 0) {
+                double surface = surfaceY - camY;
+                if (top <= surface) continue;
+                if (bottom < surface) {
+                    bottom = surface;
+                    v1 = (float) ((top - bottom) / dropLength);
+                }
+            }
+
+            buf.pos(dx - rx, top, dz - rz).tex(0, 0).color(red, green, blue, alpha).endVertex();
+            buf.pos(dx - rx, bottom, dz - rz).tex(0, v1).color(red, green, blue, alpha).endVertex();
+            buf.pos(dx + rx, bottom, dz + rz).tex(1, v1).color(red, green, blue, alpha).endVertex();
+            buf.pos(dx + rx, top, dz + rz).tex(1, 0).color(red, green, blue, alpha).endVertex();
         }
 
         tess.draw();
