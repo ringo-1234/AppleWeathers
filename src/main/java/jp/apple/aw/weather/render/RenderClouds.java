@@ -203,6 +203,7 @@ public final class RenderClouds {
 
         // 雲の見た目
         shader.set1f("uCoverage", current.coverage);
+        shader.set1f("uVeil", current.veil);
         shader.set1f("uOpacity", current.opacity);
         shader.set1f("uSoftness", current.softness);
         shader.set1f("uShade", current.shade);
@@ -210,7 +211,7 @@ public final class RenderClouds {
         shader.set3f("uDark", current.dark[0], current.dark[1], current.dark[2]);
 
         // 環境（太陽の向き。地平線より下なら月に切り替える）
-        Vec3d fog = world.getFogColor(pt);
+        Vec3d fog = RenderFog.getFogColor(world, pt);
         shader.set3f("uFogColor", (float) fog.x, (float) fog.y, (float) fog.z);
 
         float a = world.getCelestialAngleRadians(pt);

@@ -286,8 +286,10 @@ public class RenderWetGround {
         shader.set1f("uWetness", wet);
         shader.set1f("uRain", rain);
 
-        Vec3d sky = world.getSkyColor(view, pt);
-        Vec3d fog = world.getFogColor(pt);
+        Vec3d fog = RenderFog.getFogColor(world, pt);
+        Vec3d sky = RenderFog.overcastSky(world.getSkyColor(view, pt), fog);
+        shader.set1f("uFogStart", RenderFog.getFogStart());
+        shader.set1f("uFogEnd", RenderFog.getFogEnd());
         shader.set3f("uSkyColor", (float) sky.x, (float) sky.y, (float) sky.z);
         shader.set3f("uFogColor", (float) fog.x, (float) fog.y, (float) fog.z);
 

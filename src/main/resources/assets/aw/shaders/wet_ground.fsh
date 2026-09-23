@@ -21,6 +21,8 @@ uniform float uDownfallScale;
 uniform float uTime;             // 波紋の時間（周期単位、0..256 でループ）
 uniform float uWetness;          // 0..1
 uniform float uRain;             // 0..1
+uniform float uFogStart;
+uniform float uFogEnd;
 
 // ---- 環境 ----
 uniform vec3  uSkyColor;
@@ -192,6 +194,7 @@ void main() {
     float dist = length(vRel.xz);
     float edge = 1.0 - smoothstep(uRadius * 0.65, uRadius, dist);
     if (edge <= 0.002) discard;
+    if (uFogEnd > uFogStart) edge *= clamp((uFogEnd - length(vView)) / (uFogEnd - uFogStart), 0.0, 1.0);
 
     // 雨への露出度。屋根の下は Java 側で小さい値が入ってくる。
     float exposure = clamp(vExp, 0.0, 1.0);
