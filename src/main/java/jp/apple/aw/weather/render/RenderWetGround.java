@@ -101,7 +101,7 @@ public class RenderWetGround {
     /** 地表グリッドを作り直す間隔（tick） */
     private static final int REBUILD_INTERVAL = 5;
     /** 面を地面より少し浮かせる量（Zファイト対策） */
-    private static final double Y_OFFSET = 0.005;
+    private static final double Y_OFFSET = 0.001;
 
     private static final ShaderProgram shader = new ShaderProgram();
     private static final FloatBuffer MAT = BufferUtils.createFloatBuffer(16);
@@ -137,7 +137,7 @@ public class RenderWetGround {
 
     // ================= Tick =================
 
-    public static void onClientTick(int intensity) {
+    public static void onClientTick(int rainIntensity, boolean surfaceNeeded) {
         Minecraft mc = Minecraft.getMinecraft();
         hookReload(mc);
 
@@ -148,21 +148,21 @@ public class RenderWetGround {
         if (mc.isGamePaused()) return;
 
         prevWetness = wetness;
-        int idx = MathHelper.clamp(intensity, 0, wetCapByIntensity.length - 1);
+        int idx = MathHelper.clamp(rainIntensity, 0, wetCapByIntensity.length - 1);
         float cap = wetCapByIntensity[idx];
         if (wetness < cap) {
-            wetness = Math.min(cap, wetness + wetRise * Math.max(1, intensity));
+            wetness = Math.min(cap, wetness + wetRise * Math.max(1, rainIntensity));
         } else if (wetness > cap) {
             wetness = Math.max(cap, wetness - dryRate);
         }
 
         // 雨の強さは急に切り替わらないよう補間（波紋の出入りを滑らかに）
         prevRainLevel = rainLevel;
-        float target = MathHelper.clamp(intensity / 3f, 0f, 1f);
+        float target = MathHelper.clamp(rainIntensity / 3f, 0f, 1f);
         rainLevel += (target - rainLevel) * 0.05f;
 
         // 濡れているあいだだけ地表グリッドを更新
-        if (wetness > 0.002f) {
+        if (wetness > 0.002f || surfaceNeeded) {
             if (!WetSurfaceGrid.isValid() || ++rebuildTimer >= REBUILD_INTERVAL) {
                 rebuildTimer = 0;
                 Entity view = mc.getRenderViewEntity();

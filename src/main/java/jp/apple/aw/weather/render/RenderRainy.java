@@ -18,6 +18,8 @@ public class RenderRainy {
     public static ResourceLocation texture = new ResourceLocation("aw", "textures/weather/rainy.png");
     /** 雨粒の数/intensity */
     public static int dropsPerIntensity = 400;
+    /** 天気の変化に合わせて、密度をどれくらいの速さで目標値へ近づけるか（1tickあたりの割合） */
+    public static float intensitySmoothing = 0.03f;
     /** 雨粒数上限 */
     public static int maxDrops = 20000;
     /** 水平方向の描画範囲 */
@@ -35,6 +37,9 @@ public class RenderRainy {
     public static float green = 1.0f;
     public static float blue = 1.0f;
     public static float alpha = 0.3f;
+    /** 天気から決まる目標密度へ、毎tick少しずつ近づく現在の密度 */
+    private static float intensity = 0f;
+    private static float prevIntensity = 0f;
 
     private static final long SEED = 12345L;
 
@@ -57,22 +62,38 @@ public class RenderRainy {
             ns[i] = r.nextFloat();
         }
     }
+    public static float getIntensity() {
+        return intensity;
+    }
+
+    public static void reset() {
+        intensity = prevIntensity = 0f;
+    }
+
+    /** targetIntensity は今までの switch-case の値と同じスケール（LIGHT=4, NORMAL=8, HEAVY=15, STORMY=20）。降っていないなら 0。 */
+    public static void onClientTick(float targetIntensity) {
+        prevIntensity = intensity;
+        intensity += (targetIntensity - intensity) * intensitySmoothing;
+        if (targetIntensity <= 0f && intensity < 0.05f) intensity = 0f;
+    }
 
     private static double wrap(double v, double range) {
         return v - Math.floor(v / range) * range;
     }
 
     // ================= 描画 =================
-    public static void render(RenderWorldLastEvent event, int intensity) {
+    public static void render(RenderWorldLastEvent event) {
+        float pt = event.getPartialTicks();
+        float lvl = prevIntensity + (intensity - prevIntensity) * pt;
+        if (lvl <= 0.05f) return;
+
         Minecraft mc = Minecraft.getMinecraft();
         Entity view = mc.getRenderViewEntity();
-        if (mc.world == null || view == null || intensity <= 0) return;
+        if (mc.world == null || view == null) return;
 
-        int count = Math.min(intensity * dropsPerIntensity, maxDrops);
+        int count = Math.min(Math.round(lvl * dropsPerIntensity), maxDrops);
         if (count <= 0) return;
         ensureCapacity(count);
-
-        float pt = event.getPartialTicks();
         double camX = view.lastTickPosX + (view.posX - view.lastTickPosX) * pt;
         double camY = view.lastTickPosY + (view.posY - view.lastTickPosY) * pt;
         double camZ = view.lastTickPosZ + (view.posZ - view.lastTickPosZ) * pt;

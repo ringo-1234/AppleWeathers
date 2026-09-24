@@ -16,55 +16,69 @@ public class WeatherRenderer {
         RenderAtmosphere.render(event);
         RenderLightning.render(event);
         RenderWetGround.render(event);
-        switch (WeatherManager.currentWeather) {
-            case SUNNY:
-                break;
-            case STORMY:
-                RenderRainy.render(event, 20);
-                break;
-            case CLOUDY:
-                break;
-            case LIGHT_RAINY:
-                RenderRainy.render(event, 4);
-                break;
-            case RAINY:
-                RenderRainy.render(event, 8);
-                break;
-            case HEAVY_RAINY:
-                RenderRainy.render(event, 15);
-                break;
-            case LIGHT_SNOWY:
-                break;
-            case SNOWY:
-                break;
-            case HEAVY_SNOWY:
-                break;
-        }
+        RenderSnowGround.render(event);
+        RenderSnow.render(event);
+        RenderRainy.render(event);
     }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
 
-        int intensity = 0; // WetGroudに渡すintensity
+        int wetIntensity = 0;
+        int snowGroundIntensity = 0;
+        float snowParticleTarget = 0f;
+        float rainParticleTarget = 0f;
+        boolean weatherActive = false;
         switch (WeatherManager.currentWeather) {
             case LIGHT_RAINY:
-                intensity = 1;
+                wetIntensity = 1;
+                rainParticleTarget = 4f;
+                weatherActive = true;
                 break;
             case RAINY:
-                intensity = 2;
+                wetIntensity = 2;
+                rainParticleTarget = 8f;
+                weatherActive = true;
                 break;
             case HEAVY_RAINY:
-                intensity = 3;
+                wetIntensity = 3;
+                rainParticleTarget = 15f;
+                weatherActive = true;
                 break;
             case STORMY:
-                intensity = 3;
+                wetIntensity = 3;
+                rainParticleTarget = 20f;
+                weatherActive = true;
+                break;
+            case LIGHT_SNOWY:
+                snowGroundIntensity = 1;
+                snowParticleTarget = 4f;
+                weatherActive = true;
+                break;
+            case SNOWY:
+                snowGroundIntensity = 2;
+                snowParticleTarget = 8f;
+                weatherActive = true;
+                break;
+            case HEAVY_SNOWY:
+                snowGroundIntensity = 3;
+                snowParticleTarget = 15f;
+                weatherActive = true;
                 break;
             default:
                 break;
         }
+
+        boolean surfaceNeeded = weatherActive
+                || RenderWetGround.getWetness() > 0.002f
+                || RenderSnowGround.getLevel() > 0.002f;
+
         RenderClouds.onClientTick(WeatherManager.currentWeather);
         RenderLightning.onClientTick(WeatherManager.currentWeather);
-        RenderWetGround.onClientTick(intensity);
+        RenderWetGround.onClientTick(wetIntensity, surfaceNeeded);
+        RenderSnowGround.onClientTick(snowGroundIntensity);
+        RenderSnow.onClientTick(snowParticleTarget);
+        RenderRainy.onClientTick(rainParticleTarget);
     }
 }
