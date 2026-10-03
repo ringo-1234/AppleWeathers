@@ -95,7 +95,7 @@ public class CommandAppleWeathers extends CommandBase {
                         return;
                     }
             }
-            WeatherManager.currentWeather = targetWeather;
+            WeatherManager.setWeather(targetWeather);
             sender.sendMessage(new TextComponentString("§a[AppleWeathers] 天候を[" + targetWeather.getLabel() + "]に変更しました。"));
         }
     }

@@ -1,6 +1,7 @@
 package jp.apple.aw;
 
 import jp.apple.aw.command.CommandAppleWeathers;
+import jp.apple.aw.network.AppleWeathersNetwork;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +18,7 @@ public class AppleWeathersCore {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         LOGGER.info("Loaded: {}",Tags.MOD_NAME);
+        AppleWeathersNetwork.init();
     }
     
     @Mod.EventHandler
